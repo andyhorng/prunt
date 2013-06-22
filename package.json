@@ -1,0 +1,36 @@
+{
+  "name": "prunt",
+  "version": "0.0.0",
+  "description": "Like grunt but simpler",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hden/prunt.git"
+  },
+  "keywords": [
+    "task",
+    "build",
+    "make",
+    "tool",
+    "uglify",
+    "minify",
+    "test"
+  ],
+  "author": "Hao-kang Den",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "3b291f170b8c5e713b47ddfcaa577429b7856aeb",
+  "dependencies": {
+    "glob": "~3.2.1",
+    "q": "~0.9.6",
+    "coffee-script": "~1.6.3",
+    "underscore": "~1.4.4"
+  },
+  "devDependencies": {
+    "mocha": "~1.11.0",
+    "chai": "~1.7.0"
+  }
+}
