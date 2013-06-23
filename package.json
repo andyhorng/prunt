@@ -28,7 +28,8 @@
     "q": "~0.9.6",
     "coffee-script": "~1.6.3",
     "underscore": "~1.4.4",
-    "uglify-js": "~2.3.6"
+    "uglify-js": "~2.3.6",
+    "clean-css": "~1.0.10"
   },
   "devDependencies": {
     "mocha": "~1.11.0",
