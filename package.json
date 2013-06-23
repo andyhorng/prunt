@@ -27,7 +27,8 @@
     "glob": "~3.2.1",
     "q": "~0.9.6",
     "coffee-script": "~1.6.3",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "uglify-js": "~2.3.6"
   },
   "devDependencies": {
     "mocha": "~1.11.0",
