@@ -11,6 +11,13 @@ It have several aims.
 * Declarative deta transformation
 * Use your favorite CLI
 
+Current features:
+
+* Concatenate files
+* Compile coffee-script
+* Minify JavaScript
+* Minify CSS
+
 Install
 -----
 
@@ -31,7 +38,7 @@ For example we might concat, compile, and minify source codes
     read('src/*.coffee')
       .then(concat)
       .then(compile)
-      .then(minifyJS)
+      .then(uglify)
       .done(write)
 
 We can even go further with this concept
@@ -42,9 +49,9 @@ We can even go further with this concept
       file.filename.match /.coffee/
     compileCoffee = do prunt.coffee
 
-    lessFilter = prunt.filter (file) ->
-      file.filename.match /.less/
-    compileLess = do prunt.less
+    cssFilter = prunt.filter (file) ->
+      file.filename.match /.css/
+    minifyCSS = do prunt.less
 
     sourceCodes = prunt.read 'src/*'
 
@@ -55,8 +62,8 @@ We can even go further with this concept
 
     # Less workflow
     sourceCodes
-      .then(lessFilter)
-      .then(compileLess)
+      .then(cssFilter)
+      .then(minifyCSS)
 
 Declarative deta transformation
 -----
@@ -125,6 +132,24 @@ Development
 
 build `cake build`
 test `npm test` or `mocha`
+
+Coming soon:
+
+* Clean files and folders
+* Compile Sass
+* Compile LESS
+* Please vote for new features at issue pages
+
+Pending for requests:
+
+* jshint
+* csslint
+* coffeelint
+* handlebar
+* htmlmin
+* imagemin
+* Stylus
+* jade
 
 Licence (MIT)
 -----

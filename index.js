@@ -1,5 +1,5 @@
 (function() {
-  var CoffeeScript, Q, fs, glob, partial, path, util, _,
+  var CoffeeScript, Q, UglifyJS, cleanCSS, fs, glob, partial, path, util, _,
     __slice = [].slice;
 
   path = require('path');
@@ -56,6 +56,17 @@
           filename: filename
         })
       ];
+    };
+  };
+
+  cleanCSS = require('clean-css');
+
+  exports.cssmin = function(options) {
+    return function(files) {
+      files.forEach(function(file) {
+        return file.content = cleanCSS.process(file.content, options);
+      });
+      return files;
     };
   };
 
@@ -210,6 +221,38 @@
     } else {
       return d;
     }
+  };
+
+  _ = require('underscore');
+
+  UglifyJS = require('uglify-js');
+
+  exports.uglify = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    return function(files) {
+      var maps;
+      maps = [];
+      files.forEach(function(file) {
+        var code, map, _ref;
+        _ref = UglifyJS.minify(file.content, {
+          fromString: true,
+          outSourceMap: file.filename || ''
+        }), code = _ref.code, map = _ref.map;
+        file.content = code;
+        return maps.push(new exports.File({
+          content: map,
+          dirname: file.dirname,
+          filename: "" + file.filename + ".map"
+        }));
+      });
+      if (!options.sourceMap) {
+        return files;
+      } else {
+        return _.flatten([files, maps]);
+      }
+    };
   };
 
   fs = require('fs');
