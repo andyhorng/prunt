@@ -1,10 +1,10 @@
 {
   "name": "prunt",
   "version": "0.0.0",
-  "description": "Like grunt but simpler",
+  "description": "Like grunt, but simpler",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",

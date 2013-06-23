@@ -16,5 +16,7 @@ exports.read = (patterns) ->
           print "reading #{file}"
           content = fs.readFileSync file, 'utf-8'
           filename = path.basename file
-          dirname = path.dirname file
-          new exports.File {content, dirname, filename}
+          dirname = path.resolve path.dirname file
+          file = new exports.File {content, dirname, filename}
+          file.isDirty = false
+          file

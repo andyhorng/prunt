@@ -1,9 +1,10 @@
 _ = require 'underscore'
 
-exports.join = (options) ->
-  print = exports.util.log 'join'
-  rename = {exports}
+exports.concat = (options = {}) ->
+  # print = exports.util?.log?('concat')
+  print = exports.util.log 'concat'
   (files) ->
+    print "joining #{files?.length} files"
     content = _.chain(files)
       .pluck('content')
       .reduce (a, b) ->

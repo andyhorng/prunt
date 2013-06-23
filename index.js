@@ -1,26 +1,33 @@
 (function() {
-  var CoffeeScript, Q, fs, glob, path, util, _;
+  var CoffeeScript, Q, fs, glob, partial, path, util, _,
+    __slice = [].slice;
+
+  path = require('path');
 
   CoffeeScript = require('coffee-script');
 
   exports.coffee = function(options) {
-    var print;
+    var print, _ref;
     if (options == null) {
       options = {};
     }
-    print = exports.util.log('coffee');
+    print = ((_ref = exports.util) != null ? typeof _ref.log === "function" ? _ref.log('coffee') : void 0 : void 0) || (function() {});
     return function(files) {
       return files.map(function(d) {
         var content, dirname, filename;
         content = d.content, filename = d.filename, dirname = d.dirname;
         print("compiling " + filename);
-        if (filename.match(/.litcoffee/)) {
+        if (path.extname(filename) === '.litcoffee') {
           if (options.literate == null) {
             options.literate = true;
           }
         }
         d.content = CoffeeScript.compile(content, options);
-        d.filename = filename.replace('.coffee', '.js');
+        if (options.literate) {
+          d.filename = d.filename.replace('.litcoffee', '.js');
+        } else {
+          d.filename = filename.replace('.coffee', '.js');
+        }
         return d;
       });
     };
@@ -28,14 +35,15 @@
 
   _ = require('underscore');
 
-  exports.join = function(options) {
-    var print, rename;
-    print = exports.util.log('join');
-    rename = {
-      exports: exports
-    };
+  exports.concat = function(options) {
+    var print;
+    if (options == null) {
+      options = {};
+    }
+    print = exports.util.log('concat');
     return function(files) {
       var content, dirname, filename;
+      print("joining " + (files != null ? files.length : void 0) + " files");
       content = _.chain(files).pluck('content').reduce(function(a, b) {
         return '' + a + b;
       }).value();
@@ -51,28 +59,91 @@
     };
   };
 
-  fs = require('fs');
-
   path = require('path');
 
   util = require('util');
+
+  _ = require('underscore');
 
   exports.util = {};
 
   exports.util.log = function(moduleName) {
     return function(msg) {
-      return util.format('%s: %s', moduleName, msg);
+      return util.log("<" + moduleName + "> " + msg);
     };
   };
 
   exports.File = (function() {
+    Object.defineProperty(File.prototype, 'content', {
+      get: function() {
+        return this._content;
+      },
+      set: function(_content) {
+        this._content = _content;
+        return this.isDirty = true;
+      }
+    });
+
     function File(_arg) {
       this.content = _arg.content, this.dirname = _arg.dirname, this.filename = _arg.filename;
     }
 
+    File.prototype.rename = function(filename) {
+      this.filename = filename;
+      return this;
+    };
+
+    File.prototype.chdir = function(dir) {
+      this.dirname = path.resolve(process.cwd(), dir);
+      return this;
+    };
+
     return File;
 
   })();
+
+  partial = function(f) {
+    return function() {
+      var args;
+      args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      return function(files) {
+        var res;
+        args.unshift(files);
+        res = f.apply(files, args);
+        if (!_.isArray(res)) {
+          res = [res];
+        }
+        return res;
+      };
+    };
+  };
+
+  ['map', 'reduce', 'reduceRight', 'find', 'filter', 'where', 'findWhere', 'reject', 'sortBy'].forEach(function(key) {
+    return exports[key] = partial(_[key]);
+  });
+
+  ['first', 'initial', 'last', 'rest', 'compact', 'flatten'].forEach(function(key) {
+    return exports[key] = partial(_[key]);
+  });
+
+  exports.each = function(f) {
+    return function(files) {
+      files.forEach(f);
+      return files;
+    };
+  };
+
+  exports.invoke = function() {
+    var args, method;
+    method = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return function(files) {
+      files.forEach(function(file) {
+        var _ref;
+        return (_ref = file[method]) != null ? _ref.apply(file, args) : void 0;
+      });
+      return files;
+    };
+  };
 
   fs = require('fs');
 
@@ -96,12 +167,14 @@
         print("reading " + file);
         content = fs.readFileSync(file, 'utf-8');
         filename = path.basename(file);
-        dirname = path.dirname(file);
-        return new exports.File({
+        dirname = path.resolve(path.dirname(file));
+        file = new exports.File({
           content: content,
           dirname: dirname,
           filename: filename
         });
+        file.isDirty = false;
+        return file;
       });
     })));
   };
@@ -109,12 +182,12 @@
   _ = require('underscore');
 
   exports.rename = function(options) {
-    var print;
-    print = exports.util.log('rename');
+    var print, _ref;
+    print = ((_ref = exports.util) != null ? typeof _ref.log === "function" ? _ref.log('rename') : void 0 : void 0) || (function() {});
     if (_.isString(options)) {
       return function(files) {
         return files.map(function(d) {
-          return d.filename = options;
+          return d.rename(options);
         });
       };
     } else if (_.isArray(options)) {
@@ -123,14 +196,16 @@
           var name;
           name = options[i];
           if ((name != null) && _.isString(name)) {
-            return d.filename = options[i];
+            return d.rename(options[i]);
           }
         });
         return files;
       };
     } else if (_.isFunction(options)) {
       return function(files) {
-        return files.map(options);
+        return files.map(function(d) {
+          return d.rename(options(d.filename));
+        });
       };
     } else {
       return d;
@@ -138,6 +213,8 @@
   };
 
   fs = require('fs');
+
+  path = require('path');
 
   exports.write = function(options) {
     var print;
@@ -150,6 +227,7 @@
         var content, dirname, filename;
         content = file.content, filename = file.filename, dirname = file.dirname;
         print("writing " + filename);
+        filename = path.normalize(path.join(dirname, filename));
         return fs.writeFileSync(filename, content, 'utf-8', function(error) {
           if (error) {
             throw error;

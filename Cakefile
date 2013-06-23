@@ -1,11 +1,11 @@
-{read, write, coffee, join} = require './index.js'
+{read} = prunt = require './index'
+
+concat = prunt.concat {filename: 'index.coffee', dirname: '.'}
+coffee = do prunt.coffee
+write = do prunt.write
 
 task 'build', 'build prunt', ->
   read('src/*.coffee')
-    .then(join({filename: 'index.coffee'}))
-    .then(coffee())
-    .then (files) ->
-      files.map (d) ->
-        d.dirname = '.'
-        d
-    .done(write())
+    .then(concat)
+    .then(coffee)
+    .done(write)
