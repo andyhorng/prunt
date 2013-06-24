@@ -31,7 +31,8 @@ describe 'writer', ->
 
   it 'should write files', ->
     assert.isFunction write
-    write()([file])
+    [result] = write()([file])
     assert.isTrue fs.existsSync 'tmp/foo.txt'
     content = fs.readFileSync 'tmp/foo.txt', 'utf-8'
     assert.equal content, 'foo'
+    assert.isFalse result.isDirty

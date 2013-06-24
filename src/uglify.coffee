@@ -2,9 +2,11 @@ _ = require 'underscore'
 UglifyJS = require 'uglify-js'
 
 exports.uglify = (options = {}) ->
+  print = exports.util.log 'uglifyJS'
   (files) ->
     maps = []
     files.forEach (file) ->
+      print "minifying #{file.filename}"
       {code, map} = UglifyJS.minify file.content,
         fromString: true
         outSourceMap: file.filename or ''

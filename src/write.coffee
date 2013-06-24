@@ -10,4 +10,5 @@ exports.write = (options = {}) ->
       filename = path.normalize path.join dirname, filename
       fs.writeFileSync filename, content, 'utf-8', (error) ->
         throw error if error
+      file.isDirty = false
     files

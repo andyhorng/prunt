@@ -62,8 +62,11 @@
   cleanCSS = require('clean-css');
 
   exports.cssmin = function(options) {
+    var print, _ref;
+    print = ((_ref = exports.util) != null ? typeof _ref.log === "function" ? _ref.log('cssmin') : void 0 : void 0) || (function() {});
     return function(files) {
       files.forEach(function(file) {
+        print("minifying " + file.filename);
         return file.content = cleanCSS.process(file.content, options);
       });
       return files;
@@ -198,6 +201,7 @@
     if (_.isString(options)) {
       return function(files) {
         return files.map(function(d) {
+          print("renaming " + d.filename + " to " + options);
           return d.rename(options);
         });
       };
@@ -206,6 +210,7 @@
         files.forEach(function(d, i) {
           var name;
           name = options[i];
+          print("renaming " + d.filename + " to " + name);
           if ((name != null) && _.isString(name)) {
             return d.rename(options[i]);
           }
@@ -215,7 +220,10 @@
     } else if (_.isFunction(options)) {
       return function(files) {
         return files.map(function(d) {
-          return d.rename(options(d.filename));
+          var name;
+          name = options(d.filename);
+          print("renaming " + d.filename + " to " + name);
+          return d.rename(name);
         });
       };
     } else {
@@ -228,14 +236,17 @@
   UglifyJS = require('uglify-js');
 
   exports.uglify = function(options) {
+    var print;
     if (options == null) {
       options = {};
     }
+    print = exports.util.log('uglifyJS');
     return function(files) {
       var maps;
       maps = [];
       files.forEach(function(file) {
         var code, map, _ref;
+        print("minifying " + file.filename);
         _ref = UglifyJS.minify(file.content, {
           fromString: true,
           outSourceMap: file.filename || ''
@@ -271,11 +282,12 @@
         content = file.content, filename = file.filename, dirname = file.dirname;
         print("writing " + filename);
         filename = path.normalize(path.join(dirname, filename));
-        return fs.writeFileSync(filename, content, 'utf-8', function(error) {
+        fs.writeFileSync(filename, content, 'utf-8', function(error) {
           if (error) {
             throw error;
           }
         });
+        return file.isDirty = false;
       });
       return files;
     };

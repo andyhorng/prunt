@@ -9,6 +9,7 @@ It have several aims.
 
 * Promise/A-based workflow
 * Declarative deta transformation
+* Abstraction of files
 * Use your favorite CLI
 
 Current features:
@@ -107,6 +108,23 @@ We can also write a factory method to accept several kind of licence declaration
     read('src/*.coffee')
       .then(addMITLicence)
       .done(write)
+
+Abstraction of files
+-----
+
+Rather than constantly reading/writing to disk, prunt use a very simple abstraction layer to represent a file - the File class.
+
+    content = fs.readFileSync './foo.txt', 'utf-8'
+    file = new File({content: content, filename: 'foo.txt', dirname: '.'})
+    # It havn't been modified yet
+    file.isDirty = false
+
+A instance of File have 4 properties: `isDirty`, `content`, `filename`, `dirname`. `isDirty` is a binary flag that explains whether the content have been modified, and will be automatically flagged as true upon modification.
+
+    file.content = 'foo'
+    file.isDirty == true # true
+
+A instance of File have two self-explanatory methods: `rename` and `chdir`. Use them at your convenience.
 
 Use your favorite CLI
 -----
