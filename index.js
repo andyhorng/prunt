@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
   var CoffeeScript, Q, UglifyJS, cleanCSS, fs, glob, less, partial, path, util, _,
     __slice = [].slice;
 
@@ -25,6 +26,8 @@
       return [];
     };
   };
+
+  'use strict';
 
   path = require('path');
 
@@ -57,6 +60,8 @@
     };
   };
 
+  'use strict';
+
   _ = require('underscore');
 
   exports.concat = function(options) {
@@ -83,6 +88,8 @@
     };
   };
 
+  'use strict';
+
   cleanCSS = require('clean-css');
 
   exports.cssmin = function(options) {
@@ -96,6 +103,8 @@
       return files;
     };
   };
+
+  'use strict';
 
   less = require('less');
 
@@ -114,6 +123,8 @@
       }));
     };
   };
+
+  'use strict';
 
   path = require('path');
 
@@ -201,6 +212,8 @@
     };
   };
 
+  'use strict';
+
   fs = require('fs');
 
   path = require('path');
@@ -234,6 +247,8 @@
       });
     })));
   };
+
+  'use strict';
 
   _ = require('underscore');
 
@@ -273,6 +288,8 @@
     }
   };
 
+  'use strict';
+
   _ = require('underscore');
 
   UglifyJS = require('uglify-js');
@@ -307,6 +324,8 @@
       }
     };
   };
+
+  'use strict';
 
   fs = require('fs');
 

@@ -1,3 +1,4 @@
+'use strict'
 _ = require 'underscore'
 UglifyJS = require 'uglify-js'
 

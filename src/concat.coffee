@@ -1,3 +1,4 @@
+'use strict'
 _ = require 'underscore'
 
 exports.concat = (options = {}) ->

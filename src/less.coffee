@@ -1,3 +1,4 @@
+'use strict'
 less = require 'less'
 Q = require 'q'
 

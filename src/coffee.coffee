@@ -1,3 +1,4 @@
+'use strict'
 path = require 'path'
 
 CoffeeScript = require 'coffee-script'

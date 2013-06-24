@@ -1,3 +1,4 @@
+'use strict'
 cleanCSS = require 'clean-css'
 
 exports.cssmin = (options) ->
