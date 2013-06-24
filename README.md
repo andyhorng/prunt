@@ -33,7 +33,7 @@ Usually our source code went through several steps. Prunt use Primise/A-based AP
       .then(step2)
       .done(write)
 
-For example we might concat, compile, and minify source codes
+For example, we might concat, compile, and minify source codes
 
     read('src/*.coffee')
       .then(concat)
@@ -136,6 +136,7 @@ test `npm test` or `mocha`
 Coming soon:
 
 * Clean files and folders
+* [useminPrepare](https://github.com/yeoman/grunt-usemin)
 * Compile Sass
 * Compile LESS
 * Please vote for new features at issue pages
