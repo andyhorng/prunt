@@ -1,5 +1,5 @@
 (function() {
-  var CoffeeScript, Q, UglifyJS, cleanCSS, fs, glob, partial, path, util, _,
+  var CoffeeScript, Q, UglifyJS, cleanCSS, fs, glob, less, partial, path, util, _,
     __slice = [].slice;
 
   fs = require('fs');
@@ -94,6 +94,24 @@
         return file.content = cleanCSS.process(file.content, options);
       });
       return files;
+    };
+  };
+
+  less = require('less');
+
+  Q = require('q');
+
+  exports.less = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    return function(files) {
+      return Q.all(files.map(function(file) {
+        return Q.nfcall(less.render, file.content).then(function(css) {
+          file.content = css;
+          return file.rename(file.filename.replace('.less', '.css'));
+        });
+      }));
     };
   };
 

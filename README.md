@@ -4,8 +4,7 @@ Like grunt, but simpler
 > A prunt is a small blob of glass fused to another piece of glass to help provide a firm grip in the absence of a handle.
 > -- modified from [Wikipedia](http://en.wikipedia.org/wiki/Prunt).
 
-Prunt is a small build utility similar to grunt.
-It have several aims.
+Prunt is a small build utility similar to grunt. It have several aims.
 
 * Promise/A-based workflow
 * Declarative deta transformation
@@ -17,8 +16,14 @@ Current features:
 * Concatenate files
 * Clean files and folders
 * Compile coffee-script
+* Compile LESS
 * Minify JavaScript
 * Minify CSS
+
+Additional features:
+
+* Since it is based on [kriskowal/q](https://github.com/kriskowal/q), all the [methods](https://github.com/kriskowal/q/wiki/API-Reference) provided by Q are available.
+* Most of the helper functions from [underscore](http://underscorejs.org) such as `map`, `reduce` and `filter` are also available at your disposal.
 
 Install
 -----
@@ -51,9 +56,10 @@ We can even go further with this concept
       file.filename.match /.coffee/
     compileCoffee = do prunt.coffee
 
-    cssFilter = prunt.filter (file) ->
-      file.filename.match /.css/
-    minifyCSS = do prunt.less
+    lessFilter = prunt.filter (file) ->
+      file.filename.match /.less/
+    compileLESS = do prunt.less
+    minifyCSS = do prunt.cssmin
 
     sourceCodes = prunt.read 'src/*'
 
@@ -62,9 +68,10 @@ We can even go further with this concept
       .then(coffeeFilter)
       .then(compileCoffee)
 
-    # Less workflow
+    # LESS workflow
     sourceCodes
-      .then(cssFilter)
+      .then(lessFilter)
+      .then(compileLESS)
       .then(minifyCSS)
 
 Declarative deta transformation
@@ -156,7 +163,6 @@ Coming soon:
 
 * [useminPrepare](https://github.com/yeoman/grunt-usemin)
 * Compile Sass
-* Compile LESS
 * Please vote for new features at issue pages
 
 Pending for requests:
