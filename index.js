@@ -2,6 +2,30 @@
   var CoffeeScript, Q, UglifyJS, cleanCSS, fs, glob, partial, path, util, _,
     __slice = [].slice;
 
+  fs = require('fs');
+
+  path = require('path');
+
+  exports.clean = function() {
+    var print;
+    print = exports.util.log('clean');
+    return function(files) {
+      files.forEach(function(file) {
+        var dirname, filename, stat;
+        filename = file.filename, dirname = file.dirname;
+        filename = path.normalize(path.join(dirname, filename));
+        print("deleting " + filename);
+        stat = fs.statSync(filename);
+        if (stat.isFile()) {
+          return fs.unlinkSync(filename);
+        } else if (stat.isDirectory()) {
+          return fs.rmdirSync(filename);
+        }
+      });
+      return [];
+    };
+  };
+
   path = require('path');
 
   CoffeeScript = require('coffee-script');

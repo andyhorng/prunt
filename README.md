@@ -2,7 +2,7 @@ Like grunt, but simpler
 =====
 
 > A prunt is a small blob of glass fused to another piece of glass to help provide a firm grip in the absence of a handle.
-> -- Modified from [Wikipedia](http://en.wikipedia.org/wiki/Prunt).
+> -- modified from [Wikipedia](http://en.wikipedia.org/wiki/Prunt).
 
 Prunt is a small build utility similar to grunt.
 It have several aims.
@@ -15,6 +15,7 @@ It have several aims.
 Current features:
 
 * Concatenate files
+* Clean files and folders
 * Compile coffee-script
 * Minify JavaScript
 * Minify CSS
@@ -153,7 +154,6 @@ test `npm test` or `mocha`
 
 Coming soon:
 
-* Clean files and folders
 * [useminPrepare](https://github.com/yeoman/grunt-usemin)
 * Compile Sass
 * Compile LESS
