@@ -1,8 +1,9 @@
 fs = require 'fs'
 
 {assert} = require 'chai'
-CoffeeScript = require 'coffee-script'
 
+CoffeeScript = require 'coffee-script'
+rimraf = require 'rimraf'
 describe 'writer', ->
   {File} = require '../src/prunt'
   file = undefined
@@ -36,3 +37,9 @@ describe 'writer', ->
     content = fs.readFileSync 'tmp/foo.txt', 'utf-8'
     assert.equal content, 'foo'
     assert.isFalse result.isDirty
+
+  it 'should create deep dir using mkdirp', ->
+    file.chdir 'tmp/foo/bar'
+    [result] = write()([file])
+    assert.isTrue fs.existsSync 'tmp/foo/bar/foo.txt'
+    rimraf.sync 'tmp/foo'

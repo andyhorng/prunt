@@ -2,6 +2,8 @@
 fs = require 'fs'
 path = require 'path'
 
+rimraf = require 'rimraf'
+
 exports.clean = ->
   print = exports.util.log 'clean'
   (files) ->
@@ -9,9 +11,5 @@ exports.clean = ->
       {filename, dirname} = file
       filename = path.normalize path.join dirname, filename
       print "deleting #{filename}"
-      stat = fs.statSync filename
-      if stat.isFile()
-        fs.unlinkSync filename
-      else if stat.isDirectory()
-        fs.rmdirSync filename
+      rimraf.sync filename
     []
