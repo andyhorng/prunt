@@ -1,4 +1,3 @@
-'use strict'
 path = require 'path'
 util = require 'util'
 

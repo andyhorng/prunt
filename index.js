@@ -24,8 +24,6 @@
     };
   };
 
-  'use strict';
-
   path = require('path');
 
   CoffeeScript = require('coffee-script');
@@ -57,8 +55,6 @@
     };
   };
 
-  'use strict';
-
   _ = require('underscore');
 
   exports.concat = function(options) {
@@ -85,8 +81,6 @@
     };
   };
 
-  'use strict';
-
   cleanCSS = require('clean-css');
 
   exports.cssmin = function(options) {
@@ -101,7 +95,23 @@
     };
   };
 
-  'use strict';
+  exports.footer = function(string) {
+    return function(files) {
+      files.forEach(function(file) {
+        return file.content = "" + file.content + "\n" + string;
+      });
+      return files;
+    };
+  };
+
+  exports.header = function(string) {
+    return function(files) {
+      files.forEach(function(file) {
+        return file.content = "" + string + "\n" + file.content;
+      });
+      return files;
+    };
+  };
 
   less = require('less');
 
@@ -120,8 +130,6 @@
       }));
     };
   };
-
-  'use strict';
 
   path = require('path');
 
@@ -209,8 +217,6 @@
     };
   };
 
-  'use strict';
-
   fs = require('fs');
 
   path = require('path');
@@ -244,8 +250,6 @@
       });
     })));
   };
-
-  'use strict';
 
   _ = require('underscore');
 
@@ -285,8 +289,6 @@
     }
   };
 
-  'use strict';
-
   _ = require('underscore');
 
   UglifyJS = require('uglify-js');
@@ -321,108 +323,6 @@
       }
     };
   };
-
-  'use strict';
-
-  fs = require('fs');
-
-  path = require('path');
-
-  _ = require('underscore');
-
-  Q = require('q');
-
-  exports.usemin = function(options) {
-    var Info, print, regbuild, regend, regsrc;
-    if (options == null) {
-      options = {};
-    }
-    print = exports.util.log('usemin');
-    regbuild = /<!--\s*build:(\w+)(?:\(([^\)]+)\))?\s*([^\s]+)\s*-->/;
-    regend = /<!--\s*endbuild\s*-->/;
-    regsrc = /(?<=src=").+(?=">)/;
-    Info = (function() {
-      function Info() {
-        this.isBuilding = false;
-        this.src = [];
-        this.template = '';
-      }
-
-      Info.prototype.start = function(_arg) {
-        this.type = _arg.type, this.alternatePath = _arg.alternatePath, this.output = _arg.output;
-        this.isBuilding = true;
-        return this;
-      };
-
-      Info.prototype.compile = function() {
-        var File, coffee, concat, cssmin, dirname, filename, noop, read, uglify;
-        noop = Q.when('');
-        if (!this.isBuilding) {
-          return noop;
-        }
-        filename = path.basename(this.output);
-        dirname = path.dirname(this.output);
-        read = exports.read, concat = exports.concat, cssmin = exports.cssmin, uglify = exports.uglify, coffee = exports.coffee, File = exports.File;
-        switch (this.type) {
-          case 'js':
-            return read(this.src).then(concat()).then(uglify());
-          case 'css':
-            return read(this.src).then(concat()).then(cssmin());
-          case 'coffee':
-            return read(this.src).then(concat()).then(coffee()).then(uglify);
-          default:
-            return noop;
-        }
-      };
-
-      return Info;
-
-    })();
-    return function(files) {
-      files.forEach(function(file, i) {
-        var content, f, info, lines, queue;
-        content = file.content;
-        lines = content.split('\n');
-        info = new Info();
-        queue = [];
-        f = function(line) {
-          var alternatePath, footer, header, output, src, type, _ref;
-          header = line.match(regbuild);
-          if (header) {
-            _ref = header, header = _ref[0], type = _ref[1], alternatePath = _ref[2], output = _ref[3];
-            info.start({
-              type: type,
-              alternatePath: alternatePath,
-              output: output
-            });
-            return null;
-          }
-          footer = line.match(regend);
-          if (footer) {
-            queue.push(info.compile());
-            info = new Info();
-            return info.template.replace(regsrc, info.output);
-          }
-          if (info.isBuilding) {
-            src = line.match(regsrc)[0];
-            if (src) {
-              info.src.push(src);
-              if (info.template == null) {
-                info.template = line;
-              }
-            }
-            return null;
-          }
-          return line;
-        };
-        file.content = _.chain(lines).map(f).compact().join('\n').value();
-        return queue.push(Q.when(file));
-      });
-      return Q.all(_.flatten(queue));
-    };
-  };
-
-  'use strict';
 
   fs = require('fs');
 

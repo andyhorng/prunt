@@ -1,4 +1,3 @@
-'use strict'
 _ = require 'underscore'
 
 exports.rename = (options) ->
